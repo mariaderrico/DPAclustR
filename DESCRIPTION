@@ -1,0 +1,30 @@
+Package: DPAclustR
+Title: R interface to the Density Peaks Advanced (DPA) clustering in `Python`.
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Maria",
+           family = "d'Errico",
+           role = c("aut", "cre"),
+           email = "maria.derrico@fgcz.ethz.ch",
+           comment = c(ORCID = "0000-0001-9467-9058"))
+Description: The `DPA` clustering is a fully unsupervised density-based 
+    clustering that provides robust and visual information about the clusters, 
+    their statistical reliability and their hierarchical organization. 
+    It is a powerful alternative to the standard analysis frameworks with a 
+    number of advantages: no need for dimensionality reduction techniques, 
+    automatic detection of density peaks, identification of statistical 
+    fluctuations for genuine clusters selection.
+    The R package `DPAclustR` allows to exploit the Python library `DPA` by 
+    means of the `reticulate` framework, and provides usefull visualization 
+    methods with `networkD3` and `ggplot2`.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+    ggplot2 (>= 3.3.2),
+    reticulate
+Suggests:
+    networkD3 (>= 0.4),
+    testthat (>= 2.3.2)
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1

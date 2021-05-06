@@ -75,8 +75,7 @@ of the use-case example, the DPA Python package has to be loaded. Assuming the D
     library(reticulate)
     use_virtualenv("path_toEnv/venvdpa/", required=TRUE)
     setwd("path_toDPA/DPA")
-    DPA <- import_from_path("DPA", path="Pipeline/")
-    PAk <- import_from_path("PAk", path="Pipeline/")
+    DPA <- import_from_path("DPA", path="src/Pipeline/")
 
 .. References
 

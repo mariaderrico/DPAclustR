@@ -63,20 +63,20 @@ runDPAclustering <- function(data, Z=1, maxpop=NULL, dir=NULL){
     topography$border_err <- as.character(topography$border_err)
     write.csv(topography,paste0(dir,"topography_DPA_Z",toString(Z)), row.names = FALSE)
   }
-  return(new("DPAresults",
-             labels=labels_maxpop+1,
+  #return(new("DPAresults",
+  return(list(labels=labels_maxpop+1,
              density=res_dpa$densities_,
              centers=res_dpa$centers_,
-             topography=res_dpa$topography_))
+             topography=topography))
 }
 
 
-setClass(Class="DPAresults",
-         representation(
-           labels="array",
-           density="numeric",
-           centers="integer",
-           topography="list"
-         )
-)
+#setClass(Class="DPAresults",
+#         representation(
+#           labels="array",
+#           density="numeric",
+#           centers="integer",
+#           topography="list"
+#         )
+#)
 

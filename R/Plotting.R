@@ -74,7 +74,6 @@ plot_networkD3 <- function(ground_truth, cell_clustering, topography, popmin=100
 #' @param cell_clustering, list of clustering labels from clustering
 #' @param topography, list of connections between clusters as provided by the
 #'                    DPA clustering or as returned by the function build_topography
-#' @param maxD, normalization value
 #' @param popmin, default is 0. Clusters with population lower than popmin are excluded from the visualization.
 #' @param method, default "average". It it a hclust parameter, see help(hclust) for other options.
 #'
@@ -83,7 +82,7 @@ plot_networkD3 <- function(ground_truth, cell_clustering, topography, popmin=100
 #' @importFrom tidyr spread
 #' @export
 
-plot_dendrogram <- function(cell_clustering, topography, maxD, popmin=0, method="average"){
+plot_dendrogram <- function(cell_clustering, topography, popmin=0, method="average"){
 
   # Create the data structure for leaves in the tree
   pop <- table(cell_clustering)
@@ -98,7 +97,8 @@ plot_dendrogram <- function(cell_clustering, topography, maxD, popmin=0, method=
   nodes$new_name <- rownames(nodes)
 
   ### Create the data structure for the dendrogram
-  # convert similarities into distance normalizing to the maximum density in the data set
+  # convert similarities into distance normalizing to the maximum density/distance_between_clusters in the data set
+  maxD <- max(topography$value)
   topography$temp_value <- lapply(topography$value, function(x){ (maxD-x)/maxD})
 
   # Remove leaves which have population lower than popmin

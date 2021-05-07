@@ -127,6 +127,8 @@ plot_dendrogram <- function(cell_clustering, topography, maxD, popmin=0, method=
   hc <- hclust(d, method=method)
 
   # Set dendrogram labels to original clustering labels
-  plot(x = hc, labels = nodes$name, cex = 0.5)
+  #plot(x = hc, labels = nodes$name, cex = 0.5)
+  # Return the dendrogram for plotting
+  return(hc)  
 
 }

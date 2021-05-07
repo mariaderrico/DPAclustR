@@ -89,3 +89,39 @@ grid_search <- function(method, min, max, step, dataset, ground_truth, ukwn=NULL
   )
   results <- (modellist)
 }
+
+#' @title Create topography structure
+#' 
+#' @name build_topography
+#'
+#' @description Function defined in ``AnalysisTool.R``. It creates a data structure of
+#' the format ("source","target","value").
+#'
+#' @param data, input file used for clustering 
+#' @param clustering_labels, list of clustering labels from clustering
+#' @param cutoff, threshold on the distances between clusters. Distances below the
+#'               cutoff value are discarded.
+#'
+#' Note: required tidyr package
+#'
+#' @importFrom dplyr group_by summarize across
+#' @importFrom tidyr crossing
+#' @export
+build_topography <- function(data, clustering_labels){
+        # make sure to pass check.names
+        original_cols <- colnames(data)
+        colnames(data) <- paste("Col" ,original_cols,sep="-")
+	df_expr_median <- data.frame(data, clustering_labels = clustering_labels)
+	expr_median_group <- dplyr::group_by(df_expr_median, clustering_labels)
+	expr_median <- dplyr::summarize(expr_median_group, dplyr::across(everything(), median=~median(na.rm=TRUE)))
+        d <- dist(expr_median[, colnames(data)], method = "euclidean")
+        # Links
+        pairs <- tidyr::crossing(expr_median[,c("clustering_labels")],expr_median[,c("clustering_labels")], .name_repair = "unique")
+        colnames(pairs) <- c("clustering_labels", "clustering_labels1")
+        pairs <- dplyr::filter(pairs, pairs$cclustering_labels<pairs$clustering_labels1)
+        pairs[,"value"] <- as.numeric(d)
+	colnames(pairs) <- c("source","target","value")
+	pairs <- as.data.frame(as.matrix(pairs))
+	pairs
+}
+

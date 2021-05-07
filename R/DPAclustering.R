@@ -56,11 +56,11 @@ runDPAclustering <- function(data, Z=1, maxpop=NULL, dir=NULL){
     write.csv(labels_maxpop+1,paste0(dir,"cell_clustering_DPA_Z",toString(Z)), row.names = FALSE)
     write.csv(res_dpa$densities_,paste0(dir,"densities_DPA_Z",toString(Z)), row.names = FALSE)
     write.csv(res_dpa$centers_,paste0(dir,"centers_DPA_Z",toString(Z)), row.names = FALSE)
-    topography$value <- as.character(topography$value)
-    topography$source <- as.character(topography$source)
-    topography$target <- as.character(topography$target)
-    topography$border <- as.character(topography$border)
-    topography$border_err <- as.character(topography$border_err)
+    topography$value <- as.numeric(topography$value)
+    topography$source <- as.numeric(topography$source)
+    topography$target <- as.numeric(topography$target)
+    topography$border <- as.numeric(topography$border)
+    topography$border_err <- as.numeric(topography$border_err)
     write.csv(topography,paste0(dir,"topography_DPA_Z",toString(Z)), row.names = FALSE)
   }
   #return(new("DPAresults",

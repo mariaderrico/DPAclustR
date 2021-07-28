@@ -84,6 +84,11 @@ plot_networkD3 <- function(ground_truth, cell_clustering, topography, popmin=100
 #' @export
 
 plot_dendrogram <- function(cell_clustering, topography, maxD, popmin=0, method="average"){
+  # Check that the topography is not empty
+  if(nrow(topography)==0){
+    stop("No dendrogram can be created: DPA returned a single cluster and an empty topography")
+  }
+  message("Start creating dendrogram")
 
   # Create the data structure for leaves in the tree
   pop <- table(cell_clustering)
@@ -129,6 +134,7 @@ plot_dendrogram <- function(cell_clustering, topography, maxD, popmin=0, method=
   # Set dendrogram labels to original clustering labels
   #plot(x = hc, labels = nodes$name, cex = 0.5)
   # Return the dendrogram for plotting
-  return(hc)  
+  message("Dendrogram done.")
+  return(hc)
 
 }

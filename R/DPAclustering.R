@@ -31,14 +31,18 @@ runDPAclustering <- function(data, Z=1, maxpop=NULL, dir=NULL){
   # Create topography data frame
   b_topography <- as.data.frame(as.matrix(res_dpa$topography_))
   L <- length(unlist(b_topography$V1))
-  topography <- data.frame(unlist(b_topography$V1)[seq(1,L,4)], unlist(b_topography$V1)[seq(2,L+1,4)],
-                           unlist(b_topography$V1)[seq(3,L+1,4)], unlist(b_topography$V1)[seq(4,L+1,4)])
-  colnames(topography) <- c("source","target","border","border_err")
-  # Increase by one the labels so they start from 1
-  topography$source <- topography$source+1
-  topography$target <- topography$target+1
-  # Create a distances measure between clusters as max(all_densities)-border_density
-  topography$value <- c(lapply(topography$border, function(x) if (x>0) {max(res_dpa$densities_)-x} else{x}))
+  if(L>0){
+    topography <- data.frame(unlist(b_topography$V1)[seq(1,L,4)], unlist(b_topography$V1)[seq(2,L+1,4)],
+                             unlist(b_topography$V1)[seq(3,L+1,4)], unlist(b_topography$V1)[seq(4,L+1,4)])
+    colnames(topography) <- c("source","target","border","border_err")
+    # Increase by one the labels so they start from 1
+    topography$source <- topography$source+1
+    topography$target <- topography$target+1
+    # Create a distances measure between clusters as max(all_densities)-border_density
+    topography$value <- c(lapply(topography$border, function(x) if (x>0) {max(res_dpa$densities_)-x} else{x}))
+  }else{
+    topography <- data.frame()
+  }
   # Select clusters with population higher than maxpop
   if(!is.null(maxpop)){
     C <- 1:max(labels)
@@ -56,12 +60,14 @@ runDPAclustering <- function(data, Z=1, maxpop=NULL, dir=NULL){
     write.csv(labels_maxpop+1,paste0(dir,"cell_clustering_DPA_Z",toString(Z)), row.names = FALSE)
     write.csv(res_dpa$densities_,paste0(dir,"densities_DPA_Z",toString(Z)), row.names = FALSE)
     write.csv(res_dpa$centers_,paste0(dir,"centers_DPA_Z",toString(Z)), row.names = FALSE)
-    topography$value <- as.numeric(topography$value)
-    topography$source <- as.numeric(topography$source)
-    topography$target <- as.numeric(topography$target)
-    topography$border <- as.numeric(topography$border)
-    topography$border_err <- as.numeric(topography$border_err)
-    write.csv(topography,paste0(dir,"topography_DPA_Z",toString(Z)), row.names = FALSE)
+    if(L>0){
+      topography$value <- as.numeric(topography$value)
+      topography$source <- as.numeric(topography$source)
+      topography$target <- as.numeric(topography$target)
+      topography$border <- as.numeric(topography$border)
+      topography$border_err <- as.numeric(topography$border_err)
+      write.csv(topography,paste0(dir,"topography_DPA_Z",toString(Z)), row.names = FALSE)
+    }
   }
   #return(new("DPAresults",
   return(list(labels=labels_maxpop+1,

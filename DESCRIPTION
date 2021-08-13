@@ -1,6 +1,6 @@
 Package: DPAclustR
 Title: R interface to the Density Peaks Advanced (DPA) clustering in `Python`.
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     person(given = "Maria",
            family = "d'Errico",

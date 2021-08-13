@@ -13,18 +13,21 @@ NULL
 #' @param Z, the number of standard deviations fixing the level of
 #'            statistical confidence at which one decides to consider
 #'            a cluster meaningful. Default value is set to 1.
+#' @param metric, string, valid metrics are "precomputed", "euclidean".
+#'            If metric is "precomputed", data is assumed to be a distance matrix.
+#'            Default is "euclidean".
 #' @param maxpop, clusters with population above maxpop are discarded.
 #'            If maxpop is euqal to NULL, no filter is applied.
 #' @param dir, path to the directory where to save clustering results. Default is NULL.
 #'
 #' @export
-runDPAclustering <- function(data, Z=1, maxpop=NULL, dir=NULL){
+runDPAclustering <- function(data, Z=1, metric="euclidean", maxpop=NULL, dir=NULL){
   message(paste("Running DPA clustering for Z=",Z))
   # ReadInput requires a data.matrix input
   if (inherits(data, "data.frame"))
     data <- data.matrix(data)
   message("Input data loaded.")
-  est <- DPA$DensityPeakAdvanced(Z=Z)
+  est <- DPA$DensityPeakAdvanced(Z=Z, metric=metric)
   res_dpa <- est$fit(data)
   message("DPA clustering done.")
   labels <- res_dpa$labels_

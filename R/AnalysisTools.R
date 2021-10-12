@@ -21,6 +21,25 @@ majority_list <- function(ground_truth, clustering_labels){
   rule[mm]
 }
 
+#' @title Get confusion matrix
+#'
+#' @name confusion_matrix
+#'
+#' @description Function defined in ``AnalysisTools.R``.
+#'
+#' @param ground_truth, list of ground truth labels
+#' @param clustering_labels, output from a clustering algorithm
+#'
+#' @export
+confusion_matrix <- function(ground_truth, clustering_labels){
+  rule <- apply(table(ground_truth, cell_clustering), 2, which.max)
+  prediction <- rule[cell_clustering]
+  prediction_defaults <- ifelse(rule[cell_clustering]=="ADPr-Peptide", 1, 0)
+  ground_truth_defaults <- ifelse(ground_truth=="ADPr-Peptide", 1, 0)
+
+  table(ground_truth_defaults, prediction_defaults)
+}
+
 #' @title Compute Normalized Mutual Information score
 #'
 #' @name getscore_NMI
@@ -91,13 +110,13 @@ grid_search <- function(method, min, max, step, dataset, ground_truth, ukwn=NULL
 }
 
 #' @title Create topography structure
-#' 
+#'
 #' @name build_topography
 #'
 #' @description Function defined in ``AnalysisTool.R``. It creates a data structure of
 #' the format ("source","target","value").
 #'
-#' @param data, input file used for clustering 
+#' @param data, input file used for clustering
 #' @param clustering_labels, list of clustering labels from clustering
 #' @param cutoff, threshold on the distances between clusters. Distances below the
 #'               cutoff value are discarded.

@@ -6,7 +6,7 @@
 #' a network.
 #'
 #' @param ground_truth, list of ground_truth labels if available
-#' @param cell_clustering, list of clustering labels from clustering
+#' @param clustering_labels, list of clustering labels from clustering
 #' @param topography, list of connections between clusters as provided by the
 #'                    DPA clustering or as returned by the function build_topography
 #' @param popmin, default is 100. Clusters with population lower than popmin are excluded from the visualization.
@@ -17,20 +17,20 @@
 #'
 #' @importForm networkD3 forceNetwork
 #' @export
-plot_networkD3 <- function(ground_truth, cell_clustering, topography, popmin=100, ukwn=NULL, opacity=0.8){
+plot_networkD3 <- function(ground_truth, clustering_labels, topography, popmin=100, ukwn=NULL, opacity=0.8){
   # Remove uknown types in the ground_truth
   if(!is.null(ukwn)){
     mm <- ground_truth != ukwn
     ground_truth <- ground_truth[mm]
-    cell_clustering <- cell_clustering[mm]
+    clustering_labels <- clustering_labels[mm]
   }
   # Create the data structure for nodes in the graph
   # First column will be the clustering lable, then the ground_truth label
   # assigned according to majority rule.
-  rule <- apply(table(ground_truth, cell_clustering), 2, which.max)
+  rule <- apply(table(ground_truth, clustering_labels), 2, which.max)
   labels <- names(rule)
   rule <- sort(unique(ground_truth))[rule]
-  pop <- table(cell_clustering)
+  pop <- table(clustering_labels)
   nodes <- data.frame(rule, pop)
   colnames(nodes) <- c("group", "name", "size")
 
@@ -71,7 +71,7 @@ plot_networkD3 <- function(ground_truth, cell_clustering, topography, popmin=100
 #' @description Function defined in ``Plotting.R``. It visualizes the clustering results as
 #' a dendrogram.
 #'
-#' @param cell_clustering, list of clustering labels from clustering
+#' @param clustering_labels, list of clustering labels from clustering
 #' @param topography, list of connections between clusters as provided by the
 #'                    DPA clustering or as returned by the function build_topography
 #' @param maxD, normalization value
@@ -83,7 +83,7 @@ plot_networkD3 <- function(ground_truth, cell_clustering, topography, popmin=100
 #' @importFrom tidyr spread
 #' @export
 
-plot_dendrogram <- function(cell_clustering, topography, maxD, popmin=0, method="average"){
+plot_dendrogram <- function(clustering_labels, topography, maxD, popmin=0, method="average"){
   # Check that the topography is not empty
   if(nrow(topography)==0){
     stop("No dendrogram can be created: DPA returned a single cluster and an empty topography")
@@ -91,7 +91,7 @@ plot_dendrogram <- function(cell_clustering, topography, maxD, popmin=0, method=
   message("Start creating dendrogram")
 
   # Create the data structure for leaves in the tree
-  pop <- table(cell_clustering)
+  pop <- table(clustering_labels)
   nodes <- data.frame(pop)
   colnames(nodes) <- c("name", "size")
 

@@ -40,6 +40,28 @@ confusion_matrix <- function(ground_truth, clustering_labels){
   table(ground_truth_defaults, prediction_defaults)
 }
 
+#' @title Compute precision, recall, F1 and precision
+#'
+#' @name get_scores
+#'
+#' @description Function defined in ``AnalysisTools.R``.
+#'
+#' @param ground_truth, list of ground truth labels
+#' @param clustering_labels, output from a clustering algorithm
+#'
+#' @export
+get_scores <- function(ground_truth, clustering_labels){
+  cm <- confusion_matrix(ground_truth, clustering_labels)
+  precision <- cm[1]/(cm[1]+cm[2])*100
+  recall <- cm[1]/(cm[1]+cm[3])*100
+  F1 <- cm[1]/(cm[1]+0.5*(cm[2]+cm[3]))*100
+  accuracy <- (cm[1]+cm[4])/(cm[1]+cm[2]+cm[3]+cm[4])*100
+  return(list(precision = precision,
+              recall = recall,
+              F1 = F1,
+              accuracy = accuracy))
+}
+
 #' @title Compute Normalized Mutual Information score
 #'
 #' @name getscore_NMI

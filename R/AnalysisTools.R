@@ -32,12 +32,11 @@ majority_list <- function(ground_truth, clustering_labels){
 #'
 #' @export
 confusion_matrix <- function(ground_truth, clustering_labels){
-  rule <- apply(table(ground_truth, cell_clustering), 2, which.max)
-  prediction <- rule[cell_clustering]
-  prediction_defaults <- ifelse(rule[cell_clustering]=="ADPr-Peptide", 1, 0)
-  ground_truth_defaults <- ifelse(ground_truth=="ADPr-Peptide", 1, 0)
+  rule <- apply(table(ground_truth, clustering_labels), 2, which.max)
+  prediction <- rule[clustering_labels]
+  ground_truth_defaults <- ifelse(ground_truth=="ADPr-Peptide", 1, 2)
 
-  table(ground_truth_defaults, prediction_defaults)
+  table(ground_truth_defaults, prediction)
 }
 
 #' @title Compute precision, recall, F1 and precision

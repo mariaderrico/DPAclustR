@@ -12,12 +12,17 @@
 #' @param popmin, default is 100. Clusters with population lower than popmin are excluded from the visualization.
 #' @param ukwn, default is NULL. It can be set to the ground-truth label identified as uknown
 #' @param opacity, default equals to 0.8. It set the opacity of nodes in the graph
+#' @param ColourScale, set the colours of each node based on the most abundance ground_truth class.
 #'
 #' Note: required networkD3 package
 #'
 #' @importForm networkD3 forceNetwork
 #' @export
-plot_networkD3 <- function(ground_truth, clustering_labels, topography, popmin=100, ukwn=NULL, opacity=0.8){
+plot_networkD3 <- function(ground_truth, clustering_labels, topography,
+                           popmin = 100, ukwn = NULL, opacity = 0.8,
+                           ColourScale = 'd3.scaleOrdinal()
+                           .domain(["ADPr-Peptide", "randomPeptide"])
+                           .range(["#FF6900", "#694489"]);'){
   # Remove uknown types in the ground_truth
   if(!is.null(ukwn)){
     mm <- ground_truth != ukwn
@@ -61,7 +66,13 @@ plot_networkD3 <- function(ground_truth, clustering_labels, topography, popmin=1
   networkD3::forceNetwork(Links = topography, Nodes = nodes,
                           Source = "source", Target = "target",
                           Value = "value", NodeID = "new_name",
-                          Group = "group", opacity = opacity)
+                          Nodesize = "size",
+                          Group = "group", opacity = opacity,
+                          linkDistance = networkD3::JS("function(d) { return 10*d.value; }"),
+                          linkWidth = networkD3::JS("function(d) { return d.value/5; }"),
+                          zoom = FALSE, fontSize = 20,
+                          colourScale = networkD3::JS(ColourScale), opacityNoHover = 1)
+
 }
 
 #' @title Create dendrogram for clustering results

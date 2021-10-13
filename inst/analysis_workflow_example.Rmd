@@ -1,0 +1,62 @@
+---
+title: "An example of analysis workflow"
+author: "Maria d'Errico"
+date: "10/12/2021"
+output: html_document
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reticulate)
+reticulate::use_virtualenv("path_to_your_pyvirtualenv/venvdpa", required = TRUE)
+DPA <- reticulate::import("Pipeline.DPA")
+library(DPAclustR)
+```
+
+## Loading input and ground_truth file
+
+
+```{r inputs}
+df_features <- read.csv("extdata/features_tocluster_mascot.csv", header = TRUE)
+df_gt <- read.csv("extdata/GT_features_tocluster_mascot.csv", header = TRUE)
+ground_truth <- df_gt$Class
+
+```
+
+## Select main features and run DPA clustering
+
+
+```{r DPA clustering, echo=TRUE}
+data <- df_features[, c("I136.06232_pp", "I250.094014_pp", "I348.07091_pp", "I428.037241_pp", "log_DI583.082908_pp", "log_DI541.06111_pp", "log_DI347.063085_pp")]
+results <- DPAclustR::runDPAclustering(data, Z=1, metric="euclidean", maxpop=NULL, dir=NULL)
+```
+
+## Plot results
+
+Dendrogram
+
+```{r dendrogram, echo=TRUE}
+dendrogram <- DPAclustR::plot_dendrogram(results$labels, results$topography, maxD=max(results$density), popmin=5, method="average")
+plot(dendrogram)
+```
+
+Network
+
+```{r network, echo=TRUE}
+ColourScale <- 'd3.scaleOrdinal()
+                .domain(["ADPr-Peptide", "randomPeptide"])
+               .range(["#FF6900", "#694489"]);'
+DPAclustR::plot_networkD3(ground_truth, results$labels,
+                          results$topography, popmin=5,
+                          ukwn=NULL, opacity=0.8,
+                          ColourScale=ColourScale)
+```
+
+## Evaluation of clustering results
+
+```{r evaluation, echo=TRUE}
+cm <- confusion_matrix(ground_truth, results$labels)
+scores <- get_scores(ground_truth, results$labels)
+print(cm)
+print(scores)
+```
